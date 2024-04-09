@@ -1,7 +1,7 @@
 require 'redis-client'
-require 'vandelay/util/cache'
-require 'vandelay/integrations/vendor_one'
-require 'vandelay/integrations/vendor_two'
+require_relative '../util/cache'
+require_relative '../integrations/vendor_one'
+require_relative '../integrations/vendor_two'
 
 module Vandelay
   module Services
@@ -16,8 +16,8 @@ module Vandelay
       def retrieve_record_for_patient
         return { message: 'No records vendor found'} if vendor.nil?
 
-        key = 'retrieve_records_for_patient'
-        patient_record = cache.check_key("#{key}_#{patient.id}")
+        key = "retrieve_records_for_patient_#{patient.id}"
+        patient_record = cache.check_key(key)
 
         if patient_record
           p 'retrieving from cache...'
@@ -25,7 +25,7 @@ module Vandelay
         else
           p 'setting cache...'
           result = vendor.retrieve_record(patient)
-          cache.set_key("#{key}_#{patient.id}", result.to_json, ex: cache_expiry)
+          cache.set_key(key, result.to_json, ex: cache_expiry)
           result
         end
       end

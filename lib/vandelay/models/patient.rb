@@ -1,6 +1,7 @@
 module Vandelay
   module Models
     class Patient < Vandelay::Models::Base
+      attr_reader :id, :records_vendor, :vendor_id
 
       def self.all
         results = self.with_connection do |conn|
@@ -19,18 +20,6 @@ module Vandelay
         return nil if result.nil?
 
         Vandelay::Models::Patient.new(**result)
-      end
-
-      def records_vendor
-        @records_vendor
-      end
-
-      def vendor_id
-        @vendor_id
-      end
-
-      def id
-        @id
       end
 
     end

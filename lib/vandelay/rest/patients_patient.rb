@@ -25,18 +25,6 @@ module Vandelay
           json message: e.message
         end
       end
-
-      # private
-
-      # def self.records_vendor(patient)
-      #   if patient.records_vendor == 'one'
-      #     Vandelay::Integrations::VendorOne.new
-      #   elsif patient.records_vendor == 'two'
-      #     Vandelay::Integrations::VendorTwo.new
-      #   else
-      #     nil
-      #   end
-      # end
     end
   end
 end

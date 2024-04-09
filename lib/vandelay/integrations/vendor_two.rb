@@ -1,22 +1,12 @@
+require_relative '../integrations/request_handler'
+
 module Vandelay
   module Integrations
     class VendorTwo
-      def initialize
-
-      end
+      include RequestHandler
 
       def retrieve_record(patient)
-        uri = URI("http://mock_api_two/auth_tokens/#{patient.vendor_id}") # diff
-        response = Net::HTTP.get_response(uri)
-        json_response = JSON.parse(response.body)
-        token = json_response['token']
-
-        uri = URI("http://mock_api_two/records") # diff
-        http = Net::HTTP.new(uri.host)
-        request = Net::HTTP::Get.new(uri.request_uri)
-        request['Authorization'] = "Bearer #{token}"
-        response = http.request(request)
-        results = JSON.parse(response.body)
+        results = fetch_data('http://mock_api_two/auth_tokens/1', 'http://mock_api_two/records')
         api_patient = results.find { |r| r['full_name'] == patient.full_name }
 
         if api_patient

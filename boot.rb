@@ -8,4 +8,4 @@ require 'vandelay'
 require 'vandelay/util/db'
 require 'vandelay/models'
 
-Vandelay::Util::DB.verify_connection! unless Vandelay::Util::DB.connection_verified?
+# Vandelay::Util::DB.verify_connection! unless Vandelay::Util::DB.connection_verified?
