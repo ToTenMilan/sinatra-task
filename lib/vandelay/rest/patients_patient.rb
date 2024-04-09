@@ -14,6 +14,11 @@ module Vandelay
           json([results])
         end
 
+        app.get '/patients/:patient_id/record' do
+          results = Vandelay::Services::PatientRecords.new.retrieve_record_for_patient(params['patient_id'])
+          json(results)
+        end
+
         app.error do
           e = env['sinatra.error']
           json message: e.message

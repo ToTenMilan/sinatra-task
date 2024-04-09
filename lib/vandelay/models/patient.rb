@@ -21,6 +21,15 @@ module Vandelay
         Vandelay::Models::Patient.new(**result)
       end
 
+
+      def records_vendor
+        @records_vendor
+      end
+
+      def vendor_id
+        @vendor_id
+      end
+
     end
   end
 end
