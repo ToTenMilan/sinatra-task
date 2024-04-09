@@ -21,7 +21,6 @@ module Vandelay
         Vandelay::Models::Patient.new(**result)
       end
 
-
       def records_vendor
         @records_vendor
       end
