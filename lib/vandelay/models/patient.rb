@@ -29,6 +29,10 @@ module Vandelay
         @vendor_id
       end
 
+      def id
+        @id
+      end
+
     end
   end
 end

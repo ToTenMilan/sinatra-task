@@ -5,39 +5,37 @@ require 'redis-client'
 module Vandelay
   module Services
     class PatientRecords
-      def retrieve_record_for_patient(patient_id)
-        patient = Vandelay::Services::Patients.new.retrieve_one(patient_id)
+      def initialize(patient)
+        @patient = patient
+        @vendor = records_vendor
+      end
 
-        records_vendor = patient.records_vendor
-        vendor_id = patient.vendor_id
+      def retrieve_record_for_patient
+        return { message: 'No records vendor found'} if @vendor.nil?
 
-        # move too cache later
         redis = RedisClient.new(url: "redis://redis:6379")
-        patient_record = redis.call('GET', "retrieve_records_for_patient_#{patient_id}")
-
-
+        patient_record = redis.call('GET', "retrieve_records_for_patient_#{@patient.id}")
 
         if patient_record
           p 'retrieving from cache...'
           JSON.parse(patient_record)
         else
-          if records_vendor == 'one'
-            p 'retrieveing object: vendor ONE...'
-            vendor_one = Vandelay::Integrations::VendorOne.new
-            p 'sestting cache...'
-            redis.call('SET', "retrieve_records_for_patient_#{patient_id}", vendor_one.retrieve_record(patient).to_json, ex: 600)
-            p 'cache set'
-            vendor_one.retrieve_record(patient)
-          elsif records_vendor == 'two'
-            p 'retrieveing object: vendor TWO...'
-            vendor_two = Vandelay::Integrations::VendorTwo.new
-            p 'setting cache...'
-            redis.call('SET', "retrieve_records_for_patient_#{patient_id}", vendor_one.retrieve_record(patient).to_json, ex: 600)
-            p 'cache set'
-            vendor_two.retrieve_record(patient)
-          else
-            { message: 'No records vendor found'}
-          end
+          p 'setting cache...'
+          result = @vendor.retrieve_record(@patient)
+          redis.call('SET', "retrieve_records_for_patient_#{@patient.id}", result.to_json, ex: 600)
+          result
+        end
+      end
+
+      private
+
+      def records_vendor
+        if @patient.records_vendor == 'one'
+          @vendor = Vandelay::Integrations::VendorOne.new
+        elsif @patient.records_vendor == 'two'
+          @vendor = Vandelay::Integrations::VendorTwo.new
+        else
+          nil
         end
       end
     end

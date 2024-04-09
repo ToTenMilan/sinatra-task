@@ -15,7 +15,8 @@ module Vandelay
         end
 
         app.get '/patients/:patient_id/record' do
-          results = Vandelay::Services::PatientRecords.new.retrieve_record_for_patient(params['patient_id'])
+          patient = Vandelay::Services::Patients.new.retrieve_one(params['patient_id'])
+          results = Vandelay::Services::PatientRecords.new(patient).retrieve_record_for_patient
           json(results)
         end
 
@@ -24,6 +25,18 @@ module Vandelay
           json message: e.message
         end
       end
+
+      # private
+
+      # def self.records_vendor(patient)
+      #   if patient.records_vendor == 'one'
+      #     Vandelay::Integrations::VendorOne.new
+      #   elsif patient.records_vendor == 'two'
+      #     Vandelay::Integrations::VendorTwo.new
+      #   else
+      #     nil
+      #   end
+      # end
     end
   end
 end
