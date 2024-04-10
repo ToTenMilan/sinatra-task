@@ -1,6 +1,7 @@
 module Vandelay
   module Models
     class Patient < Vandelay::Models::Base
+      attr_reader :id, :records_vendor, :vendor_id
 
       def self.all
         results = self.with_connection do |conn|
